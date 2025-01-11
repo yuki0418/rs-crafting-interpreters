@@ -1,3 +1,8 @@
+[workspace]
+members = [
+  "generate_ast",
+]
+
 [package]
 name = "rs-crafting-interpreters"
 version = "0.1.0"
