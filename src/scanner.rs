@@ -71,7 +71,7 @@ impl ScannerTrait for Scanner {
             }
         }
 
-        let end_token = Token::new(TokenType::Eof, "".to_string(), Literal::NULL, self.line);
+        let end_token = Token::new(TokenType::Eof, "".to_string(), Literal::Null, self.line);
         self.tokens.push(end_token);
 
         if !errors.is_empty() {
@@ -177,7 +177,7 @@ impl ScannerTrait for Scanner {
     }
 
     fn add_null_token(&mut self, token_type: TokenType) {
-        self.add_token(token_type, Literal::NULL);
+        self.add_token(token_type, Literal::Null);
     }
 
     /// Add a string token
@@ -199,7 +199,7 @@ impl ScannerTrait for Scanner {
 
         // Trim the surrounding quotes.
         let value = self.source[self.start + 1..self.current - 1].to_string();
-        self.add_token(TokenType::String, Literal::STRING(value));
+        self.add_token(TokenType::String, Literal::String(value));
 
         Ok(())
     }
@@ -221,7 +221,7 @@ impl ScannerTrait for Scanner {
 
         self.add_token(
             TokenType::Number,
-            Literal::NUMBER(
+            Literal::Number(
                 self.source[self.start..self.current]
                     .parse()
                     .map_err(|_| ScannerError::FailedToParseNumber(self.line, self.current))?,

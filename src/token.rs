@@ -53,12 +53,12 @@ pub enum TokenType {
 
 #[derive(Debug, Clone)]
 pub enum Literal {
-    STRING(String),
-    NUMBER(f64),
-    BOOLEAN(bool),
-    CLASS,
-    FUNCTION,
-    NULL,
+    String(String),
+    Number(f64),
+    Boolean(bool),
+    Class,
+    Function,
+    Null,
 }
 
 #[derive(Debug, Clone)]
