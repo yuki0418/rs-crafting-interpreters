@@ -71,7 +71,7 @@ impl ScannerTrait for Scanner {
             }
         }
 
-        let end_token = Token::new(TokenType::EOF, "".to_string(), Literal::NULL, self.line);
+        let end_token = Token::new(TokenType::Eof, "".to_string(), Literal::NULL, self.line);
         self.tokens.push(end_token);
 
         if !errors.is_empty() {
@@ -94,45 +94,45 @@ impl ScannerTrait for Scanner {
         };
 
         match char {
-            '(' => self.add_null_token(TokenType::LEFT_PAREN),
-            ')' => self.add_null_token(TokenType::RIGHT_PAREN),
-            '{' => self.add_null_token(TokenType::LEFT_BRACE),
-            '}' => self.add_null_token(TokenType::RIGHT_BRACE),
-            ',' => self.add_null_token(TokenType::COMMA),
-            '.' => self.add_null_token(TokenType::DOT),
-            '-' => self.add_null_token(TokenType::MINUS),
-            '+' => self.add_null_token(TokenType::PLUS),
-            '*' => self.add_null_token(TokenType::STAR),
-            ';' => self.add_null_token(TokenType::SEMICOLON),
+            '(' => self.add_null_token(TokenType::LeftParen),
+            ')' => self.add_null_token(TokenType::RightParen),
+            '{' => self.add_null_token(TokenType::LeftBrace),
+            '}' => self.add_null_token(TokenType::RightBrace),
+            ',' => self.add_null_token(TokenType::Comma),
+            '.' => self.add_null_token(TokenType::Dot),
+            '-' => self.add_null_token(TokenType::Minus),
+            '+' => self.add_null_token(TokenType::Plus),
+            '*' => self.add_null_token(TokenType::Star),
+            ';' => self.add_null_token(TokenType::Semicolon),
             '!' => {
                 let token_type = if self.char_match('=')? {
-                    TokenType::BANG_EQUAL
+                    TokenType::BangEqual
                 } else {
-                    TokenType::BANG
+                    TokenType::Bang
                 };
                 self.add_null_token(token_type);
             }
             '=' => {
                 let token_type = if self.char_match('=')? {
-                    TokenType::EQUAL_EQUAL
+                    TokenType::EqualEqual
                 } else {
-                    TokenType::EQUAL
+                    TokenType::Equal
                 };
                 self.add_null_token(token_type);
             }
             '<' => {
                 let token_type = if self.char_match('=')? {
-                    TokenType::LESS_EQUAL
+                    TokenType::LessEqual
                 } else {
-                    TokenType::LESS
+                    TokenType::Less
                 };
                 self.add_null_token(token_type);
             }
             '>' => {
                 let token_type = if self.char_match('=')? {
-                    TokenType::GREATER_EQUAL
+                    TokenType::GreaterEqual
                 } else {
-                    TokenType::GREATER
+                    TokenType::Greater
                 };
                 self.add_null_token(token_type);
             }
@@ -142,7 +142,7 @@ impl ScannerTrait for Scanner {
                         self.advance();
                     }
                 } else {
-                    self.add_null_token(TokenType::SLASH);
+                    self.add_null_token(TokenType::Slash);
                 }
             }
             ' ' | '\r' | '\t' => {
@@ -199,7 +199,7 @@ impl ScannerTrait for Scanner {
 
         // Trim the surrounding quotes.
         let value = self.source[self.start + 1..self.current - 1].to_string();
-        self.add_token(TokenType::STRING, Literal::STRING(value));
+        self.add_token(TokenType::String, Literal::STRING(value));
 
         Ok(())
     }
@@ -220,7 +220,7 @@ impl ScannerTrait for Scanner {
         }
 
         self.add_token(
-            TokenType::NUMBER,
+            TokenType::Number,
             Literal::NUMBER(
                 self.source[self.start..self.current]
                     .parse()
@@ -238,23 +238,23 @@ impl ScannerTrait for Scanner {
 
         let text = &self.source[self.start..self.current];
         let token_type = match text {
-            "and" => TokenType::AND,
-            "class" => TokenType::CLASS,
-            "else" => TokenType::ELSE,
-            "false" => TokenType::FALSE,
-            "for" => TokenType::FOR,
-            "fun" => TokenType::FUN,
-            "if" => TokenType::IF,
-            "null" => TokenType::NULL,
-            "or" => TokenType::OR,
-            "print" => TokenType::PRINT,
-            "return" => TokenType::RETURN,
-            "super" => TokenType::SUPER,
-            "this" => TokenType::THIS,
-            "true" => TokenType::TRUE,
-            "var" => TokenType::VAR,
-            "while" => TokenType::WHILE,
-            _ => TokenType::IDENTIFIER,
+            "and" => TokenType::And,
+            "class" => TokenType::Class,
+            "else" => TokenType::Else,
+            "false" => TokenType::False,
+            "for" => TokenType::For,
+            "fun" => TokenType::Fun,
+            "if" => TokenType::If,
+            "null" => TokenType::Null,
+            "or" => TokenType::Or,
+            "print" => TokenType::Print,
+            "return" => TokenType::Return,
+            "super" => TokenType::Super,
+            "this" => TokenType::This,
+            "true" => TokenType::True,
+            "var" => TokenType::Var,
+            "while" => TokenType::While,
+            _ => TokenType::Identifier,
         };
 
         self.add_null_token(token_type);
