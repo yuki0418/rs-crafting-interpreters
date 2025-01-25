@@ -38,7 +38,7 @@ pub enum TokenType {
     FUN,
     FOR,
     IF,
-    NIL,
+    NULL,
     OR,
     PRINT,
     RETURN,

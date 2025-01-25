@@ -31,7 +31,10 @@ pub trait ScannerTrait {
     fn add_null_token(&mut self, token_type: TokenType);
     fn add_string(&mut self) -> Result<(), ScannerError>;
     fn add_number(&mut self) -> Result<(), ScannerError>;
+    fn add_identifier(&mut self) -> Result<(), ScannerError>;
     fn is_at_end(&self) -> bool;
+    fn is_alpha(&self, c: char) -> bool;
+    fn is_alpha_numeric(&self, c: char) -> bool;
     fn is_digit(&self, c: char) -> bool;
     /// Advance the current character and return the character
     fn advance(&mut self) -> Option<char>;
@@ -152,6 +155,8 @@ impl ScannerTrait for Scanner {
             _ => {
                 if self.is_digit(char) {
                     self.add_number()?;
+                } else if self.is_alpha(char) {
+                    self.add_identifier()?;
                 } else {
                     return Err(ScannerError::UnexpectedCharacter(
                         self.line,
@@ -226,8 +231,47 @@ impl ScannerTrait for Scanner {
         Ok(())
     }
 
+    fn add_identifier(&mut self) -> Result<(), ScannerError> {
+        while self.is_alpha_numeric(self.peek()) {
+            self.advance();
+        }
+
+        let text = &self.source[self.start..self.current];
+        let token_type = match text {
+            "and" => TokenType::AND,
+            "class" => TokenType::CLASS,
+            "else" => TokenType::ELSE,
+            "false" => TokenType::FALSE,
+            "for" => TokenType::FOR,
+            "fun" => TokenType::FUN,
+            "if" => TokenType::IF,
+            "null" => TokenType::NULL,
+            "or" => TokenType::OR,
+            "print" => TokenType::PRINT,
+            "return" => TokenType::RETURN,
+            "super" => TokenType::SUPER,
+            "this" => TokenType::THIS,
+            "true" => TokenType::TRUE,
+            "var" => TokenType::VAR,
+            "while" => TokenType::WHILE,
+            _ => TokenType::IDENTIFIER,
+        };
+
+        self.add_null_token(token_type);
+
+        Ok(())
+    }
+
     fn is_at_end(&self) -> bool {
         self.current >= self.source.len()
+    }
+
+    fn is_alpha(&self, c: char) -> bool {
+        c.is_ascii_alphabetic() || c == '_'
+    }
+
+    fn is_alpha_numeric(&self, c: char) -> bool {
+        self.is_alpha(c) || self.is_digit(c)
     }
 
     fn is_digit(&self, c: char) -> bool {
