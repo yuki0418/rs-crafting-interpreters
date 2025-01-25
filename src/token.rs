@@ -1,6 +1,6 @@
 use std::fmt::Display;
 
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub enum TokenType {
     // Single-character tokens.
     LEFT_PAREN,
@@ -51,17 +51,17 @@ pub enum TokenType {
     EOF,
 }
 
-#[derive(Debug)]
-enum Literal {
+#[derive(Debug, Clone)]
+pub enum Literal {
     STRING(String),
     NUMBER(f64),
     BOOLEAN(bool),
     CLASS,
     FUNCTION,
-    NIL,
+    NULL,
 }
 
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub struct Token {
     token_type: TokenType,
     lexeme: String,
@@ -69,7 +69,7 @@ pub struct Token {
     line: u32,
 }
 
-trait TokenTrait {
+pub trait TokenTrait {
     fn new(token_type: TokenType, lexeme: String, literal: Literal, line: u32) -> Self;
 }
 

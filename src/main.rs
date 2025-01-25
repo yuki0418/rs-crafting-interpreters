@@ -20,21 +20,24 @@ fn main() {
         }
         2 => {
             let file_path = &args[1];
-            run_file(file_path).unwrap_or_else(report_error);
+            run_file(file_path).unwrap_or_else(report_errors);
         }
         _ => {
-            run_prompt().unwrap_or_else(report_error);
+            run_prompt().unwrap_or_else(report_errors);
         }
     }
 }
 
-fn report_error(error: RLoxError) {
-    eprintln!("{}", error);
+fn report_errors(errors: Vec<RLoxError>) {
+    for error in errors {
+        eprintln!("{}", error);
+    }
+    std::process::exit(65);
 }
 
-fn run_file(file_path: &str) -> Result<(), RLoxError> {
+fn run_file(file_path: &str) -> Result<(), Vec<RLoxError>> {
     let file = std::fs::read_to_string(file_path)
-        .map_err(|e| RLoxError::FailedToReadFile(e.to_string()))?;
+        .map_err(|e| vec![RLoxError::FailedToReadFile(e.to_string())])?;
 
     run(file)?;
 
@@ -42,7 +45,7 @@ fn run_file(file_path: &str) -> Result<(), RLoxError> {
 }
 
 // Run command line prompt
-fn run_prompt() -> Result<(), RLoxError> {
+fn run_prompt() -> Result<(), Vec<RLoxError>> {
     loop {
         print!("> ");
         let mut input = String::new();
@@ -52,10 +55,16 @@ fn run_prompt() -> Result<(), RLoxError> {
     }
 }
 
-fn run(source: String) -> Result<(), RLoxError> {
+fn run(source: String) -> Result<(), Vec<RLoxError>> {
     println!("Run source: {:?}", source);
-    let scanner = Scanner::new(source);
-    let tokens = scanner.scan_tokens()?;
+    let mut scanner = Scanner::new(source);
+    let tokens = scanner.scan_tokens().map_err(|scan_errors| {
+        let rlox_error: Vec<RLoxError> = scan_errors
+            .into_iter()
+            .map(RLoxError::ScannerError)
+            .collect();
+        rlox_error
+    })?;
 
     println!("Tokens: {:?}", tokens);
 
